@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card p-4 shadow-sm border-0" style="max-width: 600px;">
+        <div class="d-flex align-items-center mb-4">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                {{ user.username|first|upper }}
+            </div>
+            <div class="ms-3">
+                <h3 class="fw-bold mb-0">Mening profilim</h3>
+                <span class="badge bg-info">{{ user.get_role_display }}</span>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row g-3">
+            <div class="col-sm-4 text-muted">Foydalanuvchi nomi:</div>
+            <div class="col-sm-8 fw-bold">{{ user.username }}</div>
+
+            <div class="col-sm-4 text-muted">Email manzil:</div>
+            <div class="col-sm-8">{{ user.email }}</div>
+
+            <div class="col-sm-4 text-muted">Bio:</div>
+            <div class="col-sm-8 text-secondary">{{ user.bio|default:"Ma'lumot berilmagan" }}</div>
+
+            <div class="col-sm-4 text-muted">Ro'yxatdan o'tgan sana:</div>
+            <div class="col-sm-8 small text-muted">{{ user.created_at|date:"d-M, Y" }}</div>
+        </div>
+
+        <div class="mt-4">
+            <a href="/admin" class="btn btn-outline-primary btn-sm px-4">Admin orqali tahrirlash</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

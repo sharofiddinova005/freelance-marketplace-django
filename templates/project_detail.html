@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-chat-dots-fill text-primary me-2"></i>Loyiha muhokamasi
+                    </h5>
+                    <span class="badge bg-light text-dark border">{{ project.get_status_display }}</span>
+                </div>
+
+                <div class="card-body bg-light chat-box" id="chatBox" style="height: 550px; overflow-y: auto; display: flex; flex-direction: column; padding: 20px;">
+
+                    <div class="align-self-start mb-3" style="max-width: 75%;">
+                        <small class="text-muted d-block mb-1">Mijoz (Admin)</small>
+                        <div class="bg-white p-3 rounded-3 shadow-sm border text-dark">
+                            Assalomu alaykum, loyiha bo'yicha barcha savollaringizni shu yerda yozishingiz mumkin.
+                        </div>
+                    </div>
+
+                    {% for item in combined_list %}
+                        {% if item.text %}
+                            {% with sender=item.user %}
+                                <div class="mb-3 {% if sender == project.client %}align-self-start{% else %}align-self-end text-end{% endif %}" style="max-width: 75%;">
+                                    <small class="text-muted d-block mb-1">
+                                        {% if sender == project.client %}Mijoz{% else %}Freelancer{% endif %} ({{ sender.username }})
+                                    </small>
+                                    <div class="p-3 rounded-4 shadow-sm {% if sender == project.client %}bg-white border text-dark{% else %}bg-primary text-white{% endif %}">
+                                        {{ item.text }}
+                                    </div>
+                                    <small class="text-muted d-block mt-1" style="font-size: 10px;">{{ item.created_at|date:"H:i" }}</small>
+                                </div>
+                            {% endwith %}
+                        {% elif item.price %}
+                            {% with sender=item.freelancer %}
+                                <div class="mb-3 align-self-end text-end" style="max-width: 80%;">
+                                    <small class="text-muted d-block mb-1">Freelancer ({{ sender.username }}) - Taklif</small>
+                                    <div class="p-3 rounded-4 shadow-sm bg-info text-dark border-0">
+                                        <div class="fw-bold border-bottom border-dark border-opacity-10 pb-1 mb-1" style="font-size: 0.85rem;">
+                                            <i class="bi bi-tag-fill me-1"></i> Taklif narxi: {{ item.price }} UZS
+                                        </div>
+                                        {{ item.message }}
+                                    </div>
+                                    <small class="text-muted d-block mt-1" style="font-size: 10px;">{{ item.created_at|date:"H:i" }}</small>
+                                </div>
+                            {% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="card-footer bg-white border-top-0 py-3">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="input-group shadow-sm rounded">
+                            <input type="text" name="chat_text" class="form-control border-light bg-light" placeholder="Xabaringizni yozing..." required>
+                            <button type="submit" name="chat_submit" class="btn btn-primary px-4">
+                                <i class="bi bi-send-fill"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card p-4 shadow-sm border-0 mb-4">
+                <h5 class="fw-bold text-primary">{{ project.title }}</h5>
+                <hr>
+                <p class="text-muted small">{{ project.description }}</p>
+                <div class="mt-3 small">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Byudjet:</span> <span class="fw-bold text-success">{{ project.budget }} UZS</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Muddat:</span> <span class="fw-bold text-danger">{{ project.deadline }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-4 shadow-sm border-0">
+                <h6 class="fw-bold mb-3">Yangi taklif bildirish</h6>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="small fw-bold">Narxingiz</label>
+                        <input type="number" name="price" class="form-control bg-light border-0" placeholder="Masalan: 5000000" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small fw-bold">Xabar</label>
+                        <textarea name="message" class="form-control bg-light border-0" rows="3" placeholder="Taklifingiz haqida..." required></textarea>
+                    </div>
+                    <button type="submit" name="bid_submit" class="btn btn-dark w-100 py-2 shadow-sm">TAKLIF YUBORISH</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var chatBox = document.getElementById("chatBox");
+    chatBox.scrollTop = chatBox.scrollHeight;
+</script>
+
+<style>
+    .chat-box::-webkit-scrollbar { width: 5px; }
+    .chat-box::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+    .chat-box { scroll-behavior: smooth; }
+    .rounded-4 { border-radius: 15px !important; }
+</style>
+{% endblock %}

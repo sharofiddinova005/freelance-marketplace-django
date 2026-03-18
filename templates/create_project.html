@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card p-4 shadow-sm border-0" style="max-width: 600px; margin: auto;">
+    <h3 class="fw-bold text-primary mb-4">Yangi loyiha e'lon qilish</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Loyiha nomi</label>
+            {{ form.title }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Tavsifi</label>
+            {{ form.description }}
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Byudjet (UZS)</label>
+                {{ form.budget }}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Deadline</label>
+                {{ form.deadline }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">E'LON QILISH</button>
+    </form>
+</div>
+{% endblock %}
